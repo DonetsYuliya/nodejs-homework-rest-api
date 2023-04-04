@@ -8,7 +8,7 @@ const {
   removeContact,
   addContact,
   updateContact,
-} = require("../../controller/tryCatchWrapper");
+} = require("../../controllers/tryCatchDecoration");
 
 router.get("/", listContacts);
 

@@ -6,18 +6,9 @@ const {
   updateContact,
 } = require("../models/contacts");
 
-const { schemaValidation, addSchema } = require("./schemaValidation");
-
-const tryCatchWrapper = (callback) => {
-  const newFunc = async (req, res, next) => {
-    try {
-      await callback(req, res);
-    } catch (error) {
-      next(error);
-    }
-  };
-  return newFunc;
-};
+const schemaValidation = require("./schemaValidation");
+const addSchema = require("../schemas/joiSchema");
+const tryCatchWrapper = require("../utils/tryCatchWrapper");
 
 const getAll = async (req, res) => {
   const result = await listContacts();
