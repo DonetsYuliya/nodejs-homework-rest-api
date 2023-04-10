@@ -1,54 +1,66 @@
-const {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact,
-} = require("../models/contacts");
+const Contact = require("../models/contactModel");
 
-const schemaValidation = require("./schemaValidation");
-const addSchema = require("../schemas/joiSchema");
-const tryCatchWrapper = require("../utils/tryCatchWrapper");
+const { tryCatchWrapper } = require("../utils/index");
+const asyncHandler = require("express-async-handler");
 
-const getAll = async (req, res) => {
-  const result = await listContacts();
-  res.status(200).json(result);
-};
+const getAll = asyncHandler(async (req, res) => {
+  const result = await Contact.find({});
+  res
+    .status(200)
+    .json({ code: 200, message: "succes", result, qty: result.length });
+});
 
-const getById = async (req, res) => {
+const getById = asyncHandler(async (req, res) => {
   const { contactId } = req.params;
-  const result = await getContactById(contactId);
-  if (!result) {
-    throw Error(`Contact '${contactId}' is not found`);
+  const result = await Contact.findOne({ _id: contactId });
+
+  res.status(200).json({ code: 200, message: "succes", result });
+});
+
+const add = asyncHandler(async (req, res) => {
+  const { name } = req.body;
+  if (!name) {
+    res.status(400);
   }
-  res.status(200).json(result);
-};
+  const result = await Contact.create({ ...req.body });
 
-const add = async (req, res) => {
-  const data = req.body;
-  const body = await schemaValidation(addSchema, data);
-  const result = await addContact(body);
-  res.status(201).json(result);
-};
+  res.status(201).json({ code: 201, message: "succes", result });
+});
 
-const remove = async (req, res) => {
+const remove = asyncHandler(async (req, res) => {
   const { contactId } = req.params;
-  const result = await removeContact(contactId);
-  if (!result) {
-    throw Error(`Contact '${contactId}' is not found`);
-  }
+  const result = await Contact.findByIdAndDelete(contactId);
+
   res.json({ message: "deleting is successful", result });
-};
+});
 
-const update = async (req, res) => {
+const update = asyncHandler(async (req, res) => {
   const { contactId } = req.params;
-  const data = req.body;
-  const body = await schemaValidation(addSchema, data);
-  const result = await updateContact(contactId, body);
-  if (!result) {
-    throw Error(`Contact '${contactId}' is not found`);
+  const { name } = req.body;
+  if (!name) {
+    res.status(400);
+    throw new Error("the name field is required");
   }
-  res.status(200).json(result);
+  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
+
+  res.status(201).json({ code: 201, message: "succes", result });
+});
+
+const updateStatus = async (req, res) => {
+  const { contactId } = req.params;
+  const { favorite } = req.body;
+  if (!favorite) {
+    res.status(400);
+    throw new Error("missing field favorite");
+  }
+
+  const result = await Contact.findByIdAndUpdate(contactId, favorite, {
+    new: true,
+  });
+
+  res.status(200).json({ code: 200, message: "succes", result });
 };
 
 module.exports = {
@@ -57,4 +69,5 @@ module.exports = {
   removeContact: tryCatchWrapper(remove),
   addContact: tryCatchWrapper(add),
   updateContact: tryCatchWrapper(update),
+  updateStatusContact: tryCatchWrapper(updateStatus),
 };
