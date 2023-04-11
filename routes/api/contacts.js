@@ -9,7 +9,7 @@ const {
   addContact,
   updateContact,
   updateStatusContact,
-} = require("../../controllers/tryCatchDecoration");
+} = require("../../controllers/contacts/index");
 
 router.get("/", listContacts);
 
