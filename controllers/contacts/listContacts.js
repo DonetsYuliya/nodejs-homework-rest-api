@@ -4,7 +4,6 @@ const { tryCatchWrapper } = require("../../utils/index");
 const asyncHandler = require("express-async-handler");
 
 const listContacts = asyncHandler(async (req, res) => {
-  console.log(req.query);
   const { _id: owner } = req.user;
   const result = await Contact.find({ owner }).populate("owner", "email");
   res
