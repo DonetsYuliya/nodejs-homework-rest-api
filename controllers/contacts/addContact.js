@@ -8,7 +8,8 @@ const addContact = asyncHandler(async (req, res) => {
   if (!name) {
     res.status(400);
   }
-  const result = await Contact.create({ ...req.body });
+  const { _id: owner } = req.user;
+  const result = await Contact.create({ ...req.body, owner });
 
   res.status(201).json({ code: 201, message: "succes", result });
 });

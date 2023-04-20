@@ -11,16 +11,18 @@ const {
   updateStatusContact,
 } = require("../../controllers/contacts/index");
 
-router.get("/", listContacts);
+const authorization = require("../../middlewares/authorization");
 
-router.get("/:contactId", getContactById);
+router.get("/", authorization, listContacts);
 
-router.post("/", addContact);
+router.get("/:contactId", authorization, getContactById);
 
-router.delete("/:contactId", removeContact);
+router.post("/", authorization, addContact);
 
-router.put("/:contactId", updateContact);
+router.delete("/:contactId", authorization, removeContact);
 
-router.patch("/:contactId/favorite", updateStatusContact);
+router.put("/:contactId", authorization, updateContact);
+
+router.patch("/:contactId/favorite", authorization, updateStatusContact);
 
 module.exports = router;
