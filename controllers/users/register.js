@@ -1,6 +1,7 @@
 const { User } = require("../../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const gravatar = require("gravatar");
 
 const { tryCatchWrapper } = require("../../utils/index");
 const asyncHandler = require("express-async-handler");
@@ -14,8 +15,13 @@ const register = asyncHandler(async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
+  const avatarURL = gravatar.url(email);
 
-  const result = await User.create({ ...req.body, password: hashPassword });
+  const result = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL,
+  });
 
   res.status(201).json({
     user: {
