@@ -1,10 +1,10 @@
 const { User } = require("../../models/userModel");
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const gravatar = require("gravatar");
-
+const { nanoid } = require("nanoid");
 const { tryCatchWrapper } = require("../../utils/index");
 const asyncHandler = require("express-async-handler");
+const { sendEmail } = require("../../middlewares/index");
 
 const register = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -16,12 +16,22 @@ const register = asyncHandler(async (req, res) => {
 
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email);
+  const verificationToken = nanoid();
 
   const result = await User.create({
     ...req.body,
     password: hashPassword,
     avatarURL,
+    verificationToken,
   });
+
+  const msg = {
+    to: email,
+    subject: "Test sending the letter to verify email by SendGrid",
+    html: `<a target="_blank" href="HTTP://localhost:3000/api/auth/users/verify/${verificationToken}">Click verify email</a>`,
+  };
+
+  await sendEmail(msg);
 
   res.status(201).json({
     user: {

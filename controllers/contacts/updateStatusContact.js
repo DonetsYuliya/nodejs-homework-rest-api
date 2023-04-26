@@ -19,6 +19,12 @@ const updateStatusContact = asyncHandler(async (req, res) => {
       new: true,
     }
   );
+  if (!result) {
+    return res.status(400).json({
+      code: 400,
+      message: `Contact with ${contactId} not found`,
+    });
+  }
 
   res.status(200).json({ code: 200, message: "succes", result });
 });

@@ -8,17 +8,21 @@ const { SECRET_KEY } = process.env;
 
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-
   const user = await User.findOne({ email });
   if (!user) {
     throw new Error(
-      res.status(401).json({ message: "Email or password is wrong" })
+      res.status(401).json({ message: "Email or password is wrong." })
     );
   }
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
     throw new Error(
       res.status(401).json({ message: "Email or password is wrong" })
+    );
+  }
+  if (!user.verify) {
+    throw new Error(
+      res.status(401).json({ message: "Please verify your email." })
     );
   }
 
