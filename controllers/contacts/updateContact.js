@@ -13,6 +13,12 @@ const updateContact = asyncHandler(async (req, res) => {
   const result = await Contact.findByIdAndUpdate(contactId, req.body, {
     new: true,
   });
+  if (!result) {
+    return res.status(400).json({
+      code: 400,
+      message: `Contact with ${contactId} not found`,
+    });
+  }
 
   res.status(201).json({ code: 201, message: "succes", result });
 });

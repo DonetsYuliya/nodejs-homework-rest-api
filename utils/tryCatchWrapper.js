@@ -6,7 +6,7 @@ const tryCatchWrapper = (callback) => {
       if (error.path) {
         return res.status(400).json({
           code: 400,
-          message: `Contact with ${error.stringValue} not found`,
+          message: `Id: ${error.stringValue} is not correct`,
         });
       }
       next(error);
