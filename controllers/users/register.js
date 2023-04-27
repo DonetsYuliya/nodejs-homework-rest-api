@@ -4,7 +4,7 @@ const gravatar = require("gravatar");
 const { nanoid } = require("nanoid");
 const { tryCatchWrapper } = require("../../utils/index");
 const asyncHandler = require("express-async-handler");
-const { sendEmail } = require("../../middlewares/index");
+const { sendEmail } = require("../../services/email/index");
 
 const register = asyncHandler(async (req, res) => {
   const { email, password } = req.body;

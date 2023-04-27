@@ -2,6 +2,7 @@ const { User } = require("../../models/userModel");
 
 const { tryCatchWrapper } = require("../../utils/index");
 const asyncHandler = require("express-async-handler");
+const { sendEmail } = require("../../services/email/index");
 
 const reVerification = asyncHandler(async (req, res) => {
   const { email } = req.body;

@@ -6,7 +6,6 @@ const asyncHandler = require("express-async-handler");
 const updateStatusContact = asyncHandler(async (req, res) => {
   const { contactId } = req.params;
   const { favorite } = req.body;
-  console.log(favorite);
   if (favorite === "") {
     res.status(400);
     throw new Error("missing field favorite");
